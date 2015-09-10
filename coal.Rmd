@@ -1,0 +1,73 @@
+---
+title: "Coal Efficiency"
+author: "Andrew Mahurin"
+date: "06/12/2015"
+output: ioslides_presentation
+---
+
+## R Markdown
+
+
+## Slide with Bullets
+
+
+## Slide with R Code and Output
+
+```{r}
+energy = read.csv(file = "~/program/coal.csv")
+energy
+summary(energy)
+```
+
+Data is from http://www.eia.gov/electricity/annual/html/epa_08_01.html
+
+## Slide with Plot
+
+```{r, echo=FALSE}
+#plot(xlim=c(2000,2013), ylim = c(5000,11000))
+plot(energy$Year, energy$Coal,ylim = c(4000,11000), type = "l")
+lines(energy$Year, energy$Natural.Gas)
+```
+Coal stays steady while the efficiency of Natural gas improves from year to year.
+
+## How much electricity generation based on Natural gas is getting better from year to year
+
+``` {r}
+res= lm(energy$Natural.Gas~energy$Year)
+summary(res)
+```
+## Plotting a straight line regression
+``` {r}
+plot(energy$Year, energy$Coal,ylim = c(4000,11000), type = "l")
+lines(energy$Year, energy$Natural.Gas)
+
+abline(res, col = "green")
+```
+
+## Calculating change based on logarithms
+``` {r}
+res2 = lm(log(energy$Natural.Gas)~energy$Year)
+summary(res2)
+```
+## Plotting logarithmic values with regression line
+``` {r}
+#plot(energy$Year, log(energy$Coal))
+#,ylim = c(4000,11000), type = "l")
+plot(energy$Year, log(energy$Natural.Gas))
+abline(res2, col = "green")
+```
+## Calculating based on differences in logs
+``` {r}
+time= 1:10
+#diff(log(energy$Natural.Gas))
+res3 = lm(diff(log(energy$Natural.Gas))~energy$Year[2:11])
+summary(res3)
+```
+
+## Plotting differences in logs
+``` {r}
+plot(energy$Year[2:11], diff(log(energy$Natural.Gas)))
+abline(res3)
+```
+The graph shows that energy usage to create electricity from natural gas decreased the most in the first year.
+## How much has Natural Gas changed on the basis of percentage change

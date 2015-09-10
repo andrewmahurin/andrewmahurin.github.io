@@ -1,0 +1,33 @@
+---
+title: "Car Finance"
+author: "Andrew Mahurin"
+date: "06/12/2015"
+output: html_document
+---
+##Introduction
+
+Buying a car is one of the most expensive decisions a family can make.
+
+One way to help with this cost is to buy a used car.  Another way would be to use any free cash to invest in the stock market.
+
+This paper will try to investigate the possibility of investing cash in the stock market in order to save for the future purchase of a car.
+
+## Question
+
+Suppose a man has $2000 to use to purchase a car, and wants a late model vehicle.  The current price for a new vehicle of the type he wants is $20,000.  If he buys it used, the price will decrease by 20%, 15%, and then 10% per year after the third year.  Unfortunately, he will not be able to know whether he will be able to get a good used car in the first or second year.
+
+for the first three years 
+For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

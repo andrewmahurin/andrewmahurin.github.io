@@ -1,0 +1,24 @@
+---
+title: "Data Compression"
+author: "Andrew Mahurin"
+date: "07/25/2015"
+output: html_document
+---
+How much memory does it take to store numbers in gammma notation?
+```{r}
+a = 1:512
+b = 2 * 10^a
+plot (a, b)
+plot (a, floor(log2(b)))
+c = log2(b - log2(b))
+plot (a, c)
+cbind(a, ceiling(log2(a)))
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

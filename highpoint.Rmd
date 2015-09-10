@@ -1,0 +1,121 @@
+---
+title: "From a highpoint"
+author: "Andrew Mahurin"
+date: "05/27/2015"
+output: ioslides_presentation
+---
+
+## Introduction
+
+What is the expected price low point that happens in the next n days after stocks reach an all-time high?
+
+Is any price drop to be expected to be lower than when the stock market is not at an all-time high?
+
+What is the expected new price high point that happens subsequent to when stocks reach a new all-time high?
+
+Is any price increase supposed to be lower than when when the stock market is not at an all-time high?
+
+
+Is the low expected to be lower than 
+in the next days after stocks reach an all-time high?
+For more details on using R Markdown 
+see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Details
+- This project poses several challenges.
+- The first is to load the data in.
+- The second is to determine whether stocks at their maximum.
+- Bullet 3
+
+## Getting Data
+
+```{r}
+symbol = "SPY"
+  URL <- paste("http://ichart.finance.yahoo.com/table.csv?s=",symbol, sep = "")
+  dat <- read.csv(URL)
+  dat$Date <- as.Date(dat$Date, "%Y-%m-%d")
+  dat$Date <- rev(dat$Date)
+  dat$Open <- rev(dat$Open)
+  dat$High <- rev(dat$High)
+  dat$Low <- rev(dat$Low)
+  dat$Close <- rev(dat$Close)
+  dat$Volume <- rev(dat$Volume)
+  dat$Adj.Close <- rev(dat$Adj.Close)
+```
+
+## Finding the maximums
+``` {r}
+library("Rcpp")
+cppFunction('
+            NumericVector max1(NumericVector x){
+  int n = x.size();
+  NumericVector out(n);
+//for(int i = 0; i < k; ++i) {
+    out[0] = NA_REAL;
+//  }
+  for(int i = 1; i < n; ++i) {
+    //out[i] = 
+    if (x[i-1] >= x[i]) 
+    {out[i] = x[i-1];}
+    else if (x[i-1] < x[i]) 
+    {out[i] = x[i];}
+    else {
+      out[i] = NA_REAL;
+    }
+  }
+  return(out);
+}
+
+            ')
+
+new1 = max1(dat$High)
+
+```
+
+## Another function
+
+``` {r}
+cppFunction('
+            NumericVector rollingmax(NumericVector x){
+  int n = x.size();
+  NumericVector out(n);
+  int lastmax = x[0];
+//for(int i = 0; i < k; ++i) {
+    out[0] = 1;
+//  }
+  for(int i = 1; i < n; ++i) {
+    //out[i] = 
+    if (x[i] > lastmax) 
+    {out[i] = 1; lastmax = x[i];}
+    else out[i] =0;
+//if (x[i-1] < x[i]) 
+//    {out[i] = x[i];}
+//    else {
+//      out[i] = NA_REAL;
+//    }
+  }
+  return(out);
+}
+
+            ')
+
+new2 = rollingmax(dat$High)
+```
+
+## Slide with Plot
+
+```{r, echo=FALSE}
+par(mfcol = c(2,1))
+plot(dat$High)
+plot(new1)
+```
+
+## Another plot
+
+``` {r}
+par(mfcol = c(2,1), col = new2)
+plot(dat$High)
+plot(new2)
+```

@@ -1,0 +1,91 @@
+---
+title: "Interest Rates"
+author: "Andrew Mahurin"
+date: "05/21/2015"
+output: html_document
+---
+
+## Introduction
+How much does interest rates affect the growth of money over time?
+
+How do small changes in the interest rate affect the growth of a portfolio?
+
+How does the interest rate paid compare with the interest earned from investments?
+
+If a state government has a low interest rate on debt that it borrows, and a high interest rate on investments that it invests, how much should it invest?
+
+see <http://rmarkdown.rstudio.com>.
+
+
+
+## Goals
+
+- To make a graph showing the amount of interest that can be earned by a state government that invests in the stock market.
+  * Actual returns will vary over time.
+- To make a graph showing how much interest a state government would have to pay on debt incurred if it borrowed to invest in the stock market.
+  *This may vary from state to state, depending on the situation.
+- To demonstrate the benefits of investing in the stock market.
+  *This won't be an unbiased presentation.
+
+
+## Introducing variables
+
+```{r}
+#example
+max_time = 100
+initial_balance = 1
+year <- 1:100
+a = b = initial_balance
+interest_rate1 = 10
+interest_rate2 = 1.5
+deposit = 1
+r1 = interest_rate1 / 100
+r2 = interest_rate2 / 100
+for (time in 2:(max_time-1)){
+a[time] = a[time-1] * (1+r1) + deposit
+b[time] = b[time-1] * (1+ r2) + deposit
+}
+a[max_time] = a[max_time-1] * (1+r1)
+b[max_time] = b[max_time-1] * (1+ r2)
+```
+
+## Summarizing variables
+``` {r}
+summary(cbind(a,b))
+```
+
+## Plotting variables
+
+```{r, echo=FALSE}
+#par(mfcol= c(2,1))
+plot(year, a)
+lines(year, b)
+```
+
+## Plotting the difference in account a and account b.
+``` {r}
+plot(1:100,a-b)
+```
+
+## Changing the variables
+
+A 5% interest rate would be equivalent to what a county would be expected to pay in interest.
+
+``` {r}
+interest_rate2 = 5
+r2 = .05
+```
+``` {r, echo=FALSE}
+for (time in 2:(max_time-1)){
+a[time] = a[time-1] * (1+r1) + deposit
+b[time] = b[time-1] * (1+ r2) + deposit
+}
+a[max_time] = a[max_time-1] * (1+r1)
+b[max_time] = b[max_time-1] * (1+ r2)
+```
+## Ploting the new results
+```{r, echo=FALSE}
+#par(mfcol= c(2,1))
+plot(year, a)
+lines(year, b)
+```

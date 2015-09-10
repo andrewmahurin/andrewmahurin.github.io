@@ -1,0 +1,93 @@
+---
+title: "Fuel Efficiency"
+author: "Andrew Mahurin"
+date: "06/13/2015"
+output: html_document
+---
+## Question
+
+How has fuel efficency improved over the last 5 or 10 years?
+
+```{r}
+df = read.csv("~/program/UMTRI_sales-weighted-MPG_May-2015.csv")
+head(df)
+summary(df)
+```
+## Plotting the data
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(df$Sales.weighted_MPG)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Converting the data to gallons per 100 miles
+
+``` {r}
+gallonsper100 = 100 /df$Sales.weighted_MPG
+plot(gallonsper100)
+```
+
+## Calculating a regression
+
+``` {r}
+n = length(gallonsper100)
+print(n)
+index = 1:n
+res = lm(gallonsper100 ~ index)
+#           df$Month.Year)
+summary(res)
+```
+
+## Plotting the results
+``` {r}
+plot(gallonsper100 ~ index)
+abline(res)
+```
+
+## Converting the data to logarhythmic values
+
+``` {r}
+res2 = lm(log(gallonsper100)~index)
+summary(res2)
+```
+This seems to demonstrate that there is a trend toward more fuel efficient vehicles over time.  The trend seems to be a .00238 improvement in fuel efficiency from month to month.
+
+## Plotting the data with the regression
+``` {r}
+plot(log(gallonsper100)~ index)
+abline(res2)
+```
+
+## Regressing on differences of logs
+
+``` {r}
+index = 1:length(diff(log(gallonsper100)))
+res3 = lm(diff(log(gallonsper100))~index)
+summary(res3)
+```
+This shows that there is no significant slowdown in the tendancy for cars to get more fuel efficient over time.  There is some slowdown, but it is not statistically significant.  This concludes the study of how fuel efficiency changes over time.  There is a clear trend in the fuel efficiency of automobiles the last several years.  The trend appears to be stable, and not slowing down much in the last few years.  A regression on the first differences does not reveal a secondary trend in the data.  Having a series which is stable relative to any time trend allows for other variables to be measured to see whether they had any effect on the fuel efficiency of vehicles.  The next step would be to see whether there is any correlation between fuel efficiency and any other variable.  The first question would be to see whether there is any correlation between the price of gasoline and the month-to-month improvements in fuel efficiency.
+
+## Plotting first differences of logs
+
+``` {r}
+index = 1:length(diff(log(gallonsper100)))
+plot(diff(log(gallonsper100))~ index)
+abline(res3, col = "green")
+abline(h = mean(diff(log(gallonsper100))), col = "blue")
+```
+This shows that the trend for greater fuel efficiency in cars is stable accross time.  The line for the mean improvement in fuel efficiency is almost equivalent to the line for the regression on the first differences.
+
+## Finding the annual change in fuel efficiency
+
+``` {r}
+annual = res2$coefficients[2] *12
+print(annual)
+print(exp(annual))
+```
+A difference in logs of -.03 equates to a percentage change of about -3%.  At this point it would be nice to open the data that has to do with the price of gasoline.  There are several sources of data for the price of gasoline for the last several years.  None of them have been selected yet.
+
+## Selecting a source of data for historic fuel prices
+
+The EIA, the AAA, and the World Bank all have historic data on the price of gas.  The Energy Information Administration seems to have the most high quality data, but they actually have multiple types of gas that they have data for.  The data that they have is also the most difficult to load in, because of its missing data values.
